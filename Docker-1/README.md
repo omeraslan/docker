@@ -28,6 +28,7 @@ Ben giriş kısmını burada bitiriyorum. Docker tarihçesi hakkında ve daha de
 ***
 ## Komutlar
 
+### A - Genel Komutlar
 ```
 docker version
 ```
@@ -37,7 +38,37 @@ Bu komut docker client ve server hakkında bilgiler verir. Client ve Server'ın 
 docker search
 ```
 Docker Hub üzerinde arama yapmayı sağlar. Örneğin; `docker search nginx` şeklinde bir komut yazarsanız nginx imajı için Docker Hub üzerinde arama yapacaktır.
+***
+### B - İmaj Komutları
 
+```
+docker images 
+
+# -q => Sadece imaj Id'lerini gösterir
+```
+Bu komut sistemdeki imajları listelemek için kullanılır. Aynı zamanda onunla aynı işi gören `docker image ls` komutu da vardır.
+
+```
+docker image pull 
+```
+Bu komut Docker Hub üzerinde yer alan imajı sistemimize indirir.
+İmajın adının sonuna herhangi bir versiyon veya etiket (tag) belirtilmezse "latest" etiketine sahip imaj indirilecektir. Örneğin; `docker pull image nginx` yazdığımız zaman bunun karşılığı `docker pull image nginx:latest` şeklinde olacaktır. "Latest" kelime manası olarak en son anlamına gelse dahi her zaman son sürümü getireceğini **garanti etmez.** Bu bir etikettir veya imajı üreten kişi hangi imaja bu etiketi verdiyse o indirilecektir. Eğer özel bir tag istiyorsak şu latest yazan yere istediğimiz etiketi yazmamız gerekiyor `docker pull image nginx:stable` gibi. Nginx için bütün etiketlere [ buradan ](https://hub.docker.com/_/nginx?tab=tags)ulaşabilirsiniz.
+
+```
+docker image inspect
+```
+Bu komut image hakkında detaylı bilgi almak istediğimiz zaman kullanılan bir komut. Kaç tane katmandan (layers) oluşuyor. Desteklediği işletim sistemleri vs. gibi bir çok konu hakkında bilgi sahibi olmamızı sağlıyor. Buradaki katman bölümü hakkında özet geçmek gerekirse; her imaj temel bir katmandan oluşur. Bu temel katman [CentOS](https://www.centos.org/) olsun. Bunun üzerine nginx kurduk. Katman sayısı iki oldu. Birde dotnet kurduk üç katmanlı bir image oldu. 
+
+```
+docker image rmi
+
+# -f => Silmek için zorla. Eğer silmek istediğimiz imaj başka bir konteyner tarafından kullanılıyorsa silmeye zorlamak için kullanılır.
+
+```
+Bu komut imaj silmek için kullanılır. Daha genel kullanıma sahip olan `docker rm` aynı işi görmektedir. 
+
+***
+### C - Konteyner Komutları
 ```
 docker ps
 
@@ -49,6 +80,151 @@ Bu komut çalışan işlemleri yani uygulama ve konteynerleri gösterir. "ps" Li
 docker pull
 ```
 Docker Hub üzerindeki bir imajı yerel diskimize indirmeyi sağlar. Örneğin; `docker pull jenkins` şeklinde bir komut yazarsanız jenkins imajını  Docker Hub'dan bilgisayarımıza indirecektir.
+
+```
+docker run 
+
+# -p, => (Port) Port belirler -p 89:80 yazdığımızda ilk kısım (89) bizim bilgisayarımızda konteynere ulaşacağımız portu ifade eder.
+
+# --interactive, -i => (Interactive) Konteyneri sadece komut satırı açık olduğu sürece ayakta tutar. Interaktif modu aktifleştirir. Bu komutla ayağa kaldırdığımız bir konteynerin çalışmaya devam etmesini istiyorsak "CTRL + PQ" tuşlarına basarak arka planda çalışmasını devam ettirebiliriz.
+
+# --tty, -t => (TTY) Konteynerle iletişime geçebileceğimiz sanal bir terminal oluşturur. Genellikle `-i` parametresiyle  beraber kullanılır.
+
+# --detach, -d => (Detach) Konteyneri arka planda ayağa kaldırır. Genellikle tek başına kullanılabilir. Fakat bazı durumlarda -it komutu ile beraber kullanılmak zorunda kalabilirsiniz. İmajın ayağa kaldırma komutu bir shell veya bash ise konteyner ayağa kalkmayacaktır. 
+
+```
+Docker Hub üzerindeki bir imajı yerel diskimizde arar eğer imajı bulamazsa; imajı indirir sonra konteyner ayağa kaldırır. `docker pull` ile arasında fark `docker pull` konteyneri ayağa kaldırmaz sadece indirir. Bu komut konteyner ayağa kaldırır. 
+
+`-it` komutunun ne zaman birlikte kullanılması konusunda detaylı bilgiye [burada](https://stackoverflow.com/a/41918607/2336116) verilen cevaptan erişebilirsiniz.
+
+```
+docker container rm
+
+# -f => Silmek için zorla. Eğer silmek istediğimiz konteyner  kullanılıyorsa silmeye zorlamak için kullanılır.
+
+```
+Bu komut konteyner silmek için kullanılır. 
+
+```
+docker container export
+```
+Bu komut bir konteynerin dosya sistemini tar arşivi olarak yerel sisteme kaydeder. `docker container export [ContainerName] -o C:/ExportedContainer.tar`
+
+```
+docker container exec
+```
+Bu komut çalışan bir konteyner üzerinde komut çalıştırmanızı sağlar. Mesela bir ubuntu konteyneri var bunda bash çalıştırmak için   `docker container exec [ContainerName] -it /bin/bash`
+
+```
+docker container kill
+```
+Bu komut çalışan bir veya birden konteyneri durdurur. Bu komutla durdurulan konteynerler `docker container ps` komutunda **görünmez**.
+
+```
+docker container stop
+```
+Bu komut çalışan bir veya birden konteyneri durdurur. `docker container kill` yakın görevi görmektedir. Aradaki fark `stop` komutunda varsayılan 10 saniye kuralı vardır. Yani işlemi durdurmadan önce 10 saniye bekler sonra durdurur (Graceful shutdown). Kıyaslama için daha fazla bilgi [buraya](https://www.memogeeks.com/2018/11/kill-stop-and-pause-docker-commands.html#summary) göz atabilirsiniz. Bu komutlarla durdurulan konteynerler `docker container ps` komutunda **görünmez**.
+
+```
+docker container pause
+```
+Bu komut çalışan bir veya birden konteyner üzerindeki sistem süreçlerini geçici olarak durdurur. Bu komutla durdurulan konteynerler `docker container ps` komutunda görünür.
+
+```
+docker container unpause
+```
+Bu komut daha önceden geçici olarak durdurulan konteyneri çalışmasını devam ettirir. 
+
+```
+docker container stats
+```
+Bu komut çalışan konteynerlerin kullandığı işlemci ram gibi bilgileri anlık olarak gösterir. Sonuna herhangi bir konteyner Id veya ismi eklenirse sadece onunla ilgili durumu gösterir.
+
+```
+docker container restart
+```
+Bu komut bir veya birden fazla konteyneri yeniden başlatır.
+
+```
+docker container port
+```
+Bu komut port veya özel mapping işlemlerini gösterir.
+
+```
+docker container prune
+```
+Bu komut durdurulmuş olan bütün konteynerleri sistemden kaldırır.
+
+```
+docker container rename
+```
+Bu komut mevcutta olan bir konteynerin adını değiştirir. `docker container rename [KonteynerId] [Yeniİsim]`
+
+```
+docker container top
+```
+Bu komut konteynerde çalışan süreçleri listeler.
+
+```
+docker container attach
+```
+Bu komut yukarıda bahsettiğim `CTRL + PQ` kullanılarak askıya alınmış bir konteynere yeniden bağlanmayı sağlar.
+
+```
+FOR /f "tokens=*" %i IN ('docker ps -aq') DO docker stop %i && docker rm %i
+```
+Bu komut Windows komut satırını kullanarak bütün konteynerleri kaldırma işlemini yapar. Bu komutun bash karşılığı `docker container rm -f $(docker container ls -aq)` şeklindedir. 
+
+```
+FOR /f "tokens=*" %i IN ('docker images --format "{{.ID}}"') DO docker rmi -f %i
+```
+Bu komut Windows komut satırını kullanarak bütün imajları kaldırma işlemini yapar. Bu komutun bash karşılığı `docker rmi -f $(docker images -q)` şeklindedir. 
+
+[Kaynak1](https://linuxize.com/post/how-to-remove-docker-images-containers-volumes-and-networks/#stop-and-remove-all-containers) [Kaynak2](https://gist.github.com/daredude/045910c5a715c02a3d06362830d045b6)
+
+
+### Kaynak Yönetimi
+
+```
+docker run -d --cpu-shares [İstenilen Değer] [İmajAdı] 
+```
+Kısaltması `-c` olan bu komut toplam işlemcinin ne kadarını kullanacağını ifade eder. Örnek verecek olursak `docker run -d --cpu-shares 512 nginx` şeklinde bir komut yazdık. Belirtilmezse varsayılan değer olarak **1024** değerini almaktadır. Tek bir konteyner olduğu durumda bir bir şey ifade etmeyecektir. Çünkü tek konteyner bütün yükü karşılayacak doğal olarak bütün işlemciyi kullanacaktır. Fakat şöyle bir şey olursa; 2048,1024 ve 512 şeklinde üç tane konteyner ve isimleri sırasıyla A,B ve C olsun işlemci kullanımı %100'e ulaştığında karşılayacakları yük miktarının hesaplamasını şu şekilde yapabiliriz:
+
+En küçük birim 512 diğer sayı değerlerini 512'ye bölelim. 
+
+A => 2048 / 512 = 4 Birim
+
+B => 1024 / 512 = 2 Birim
+
+C => 512 / 512 = 1  Birim
+
+Toplamda **7 birim** oldu. O zaman şöyle olacak **100 / 7= 14.2**
+Her birim için % 14.2'lik bir yük karşılama olacak. Sonuç olarak;
+
+A İsimli Konteyner: 14.2 x 4 = % 56.8
+
+B İsimli Konteyner: 14.2 x 2 = % 28.4
+
+C İsimli Konteyner: 14.2 x 1 = % 14.2 
+
+Toplam yükü bu şekilde paylaşacaklardır. Ben yuvarlayarak yazdığımdan toplamda %100 yapmayabilir amacım nasıl hesaplandığını göstermekti. Bu konuda daha fazla bilgi için Marek Goldmann tarafından [burada](https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/#_cpu) yazılan yazıya göz atabilirsiniz.
+
+```
+docker run -d --cpus [Çekirdek Sayısı] [İmajAdı] 
+```
+Bu komut yine işlemci sınırlamak için kullanılır. Ama diğerinde yük bazlı sınırlama varken bu komutta çekirdek bazlı bir sınırlama söz konusu. Varsayılan değeri sıfırdır. Bu da limit olmaması anlamına gelir. `docker run --cpus 2 jenkins` şeklinde bir komut yazarsak jenkins konteynerinin kullanacağı işlemciyi iki çekirdekle sınırlamış olduk. 
+
+```
+docker run -d --memory [İstenilen Değer] [İmajAdı] 
+```
+Kısaltması `-m` olan bu komut toplam RAM miktarının ne kadarını kullanacağını ifade eder. Dört farklı birim kullanarak boyut verebiliriz. Atanabilecek minimum değer 4 MB'tır. Bunlar `b, k, m, g` açılımları bytes, kilobytes, megabytes, ve gigabytes. Örnek verecek olursak `docker run -d --memory 512m nginx` şeklinde bir komut yazdık. Nginx'e 512 megabytes hafıza vermiş olduk.
+
+
+```
+docker container update  --memory [İstenilen Değer] [İmajAdı] 
+```
+Bu komut yukarıda tanımladığımız memory veya cpu gibi bilgilerin güncellemesini sağlar. `docker container update --memory 300m` gibi örnek bir sorgu yazabiliriz.
+
 
 
 
