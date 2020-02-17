@@ -65,7 +65,7 @@ docker image rmi
 # -f => Silmek için zorla. Eğer silmek istediğimiz imaj başka bir konteyner tarafından kullanılıyorsa silmeye zorlamak için kullanılır.
 
 ```
-Bu komut imaj silmek için kullanılır. Daha genel kullanıma sahip olan `docker rm` aynı işi görmektedir. 
+Bu komut imaj silmek için kullanılır. Daha genel kullanıma sahip olan `docker rmi` aynı işi görmektedir. 
 
 ***
 ### C - Konteyner Komutları
@@ -97,13 +97,14 @@ Docker Hub üzerindeki bir imajı yerel diskimizde arar eğer imajı bulamazsa; 
 
 `-it` komutunun ne zaman birlikte kullanılması konusunda detaylı bilgiye [burada](https://stackoverflow.com/a/41918607/2336116) verilen cevaptan erişebilirsiniz.
 
+
 ```
 docker container rm
 
 # -f => Silmek için zorla. Eğer silmek istediğimiz konteyner  kullanılıyorsa silmeye zorlamak için kullanılır.
 
 ```
-Bu komut konteyner silmek için kullanılır. 
+Bu komut konteyner silmek için kullanılır.  Daha genel kullanıma sahip olan `docker rm` aynı işi görmektedir. 
 
 ```
 docker container export
@@ -182,6 +183,35 @@ Bu komut Windows komut satırını kullanarak bütün imajları kaldırma işlem
 
 [Kaynak1](https://linuxize.com/post/how-to-remove-docker-images-containers-volumes-and-networks/#stop-and-remove-all-containers) [Kaynak2](https://gist.github.com/daredude/045910c5a715c02a3d06362830d045b6)
 
+### Volume Yönetimi
+
+Bir konteyner oluşturduğunuzda bütün bilgileri o konteyner içinde tutulur ve siz konteyneri sildiğinizde içindeki dosyalar hep birlikte silinir. Peki ya konteynerde yaptığınız işlemlerde oluşturduğunuz dosyaların silinmesini istemiyorsanız? O zaman `volume` parametresi devreye giriyor. Konteyneri ayağa kaldırırken volume parametresini belirttiğiniz zaman siz konteyneri sildiğiniz zaman volume silinmeyecektir ve dosyalarınız korunacaktır. Volume dosyaları `/var/lib/docker/volumes/` bu dizinde tutulur bu dizine ulaşıp konteynerin kullandığı dosyaları görebilirsiniz. **Bu durumda özel bir koşul var bu yola eğer Docker'ı Windows makinasında kullanıyorsanız ulaşamazsınız. Çünkü yarattığınız volume’ler C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\MobyLinuxVM.vhdx dizininde oluşacak ve linux’taki gibi dizine erişip çalışamayacaksınız. ** [2]
+
+```
+docker volume create --name volumeTest
+```
+Bu komut "volumeTest" adında bir volume oluşturur. 
+
+```
+docker volume rm volumeTest
+```
+Bu komut "volumeTest" adındaki volume'u siler. Eğer volume bir konteyner tarafından kullanılıyorsa `-f` komutuyla beraber yazmanız gerekecektir.
+
+```
+docker volume inspect volumeTest
+```
+Bu komut "volumeTest" adındaki volume hakkında detaylı bilgiler verir.
+
+```
+docker run -d -p 8080:80 -v volumeTest:/usr/share/nginx/html/ nginx
+```
+Bu komut "volumeTest" adındaki volume'u nginx'in html klasörüne bağlar. Nginx ayağa kalkarken bu klasördeki index.html dosyasına bakmaktadır.  "/usr/share/nginx/html/" bu yolu nginx'in Docker Hub'da bulunan sayfasından bulabilirsiniz.
+
+```
+docker run -d -p 8080:80 -v D:\VolumeTest:/usr/share/nginx/html/ nginx
+```
+Bu komut Windows 10 makinasında çalışanlar için "D:\VolumeTest" adındaki volume'u nginx'in html klasörüne bağlar. Nginx ayağa kalkarken bu klasördeki index.html dosyasına bakmaktadır. "D:\VolumeTest"  buraya index.html dosyası eklerseniz nginx ayağa kalkarken sizin verdiğiniz dosyası okuyacaktır.
+
 
 ### Kaynak Yönetimi
 
@@ -229,3 +259,4 @@ Bu komut yukarıda tanımladığımız memory veya cpu gibi bilgilerin güncelle
 
 
 [1]: https://www.emrealadag.com/docker-nedir.html
+[2]: https://medium.com/devopsturkiye/i%CC%87nceleme-1-docker-volume-971c41122d83
