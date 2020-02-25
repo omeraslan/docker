@@ -3,6 +3,7 @@
 Bu proje docker eğitimleri sırasında öğrenilen komutları ve amaçlarını toplamayı hedeflemektedir. Konuların çok karmaşık olmaması için birden fazla dosyada yazılmıştır. Aşağıdaki içindekiler bölümünden konulara ulaşabilirsiniz. 
 
 ## İçindekiler
+
 - [Docker Nedir?](/Docker-1#docker-nedir)
 - [Terminoloji](/Docker-1#terminoloji)
 - [Komutlar](/Docker-1#komutlar)
