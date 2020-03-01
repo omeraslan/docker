@@ -1,6 +1,6 @@
 # DOCKER
 
-Bu proje docker eğitimleri sırasında öğrenilen komutları ve amaçlarını toplamayı hedeflemektedir. Konuların çok karmaşık olmaması için birden fazla dosyada yazılmıştır. Aşağıdaki içindekiler bölümünden konulara ulaşabilirsiniz. 
+Bu proje docker eğitimleri sırasında öğrenilen komutları ve amaçlarını toplamayı hedeflemektedir. Konuların çok karmaşık olmaması için birden fazla dosyada yazılmıştır. Aşağıdaki içindekiler bölümünden konulara ulaşabilirsiniz.
 
 ## İçindekiler
 
