@@ -312,7 +312,19 @@ Farklı bir tip belirtilmediği sürece varsayılan olarak bridge driver kullan�
 
 Şimdi de ağ sürücü (Network Drivers) tiplerini tanıyalım. [5]
 
-**Bridge:** Varsayılan ağ sürücüsüdür. Eğer aksi belirtilmezse oluşan konteyner bu sürüyü kullanarak oluşur. IP, Subnet ve Gateway adresi otomatik olarak konteynere atanır. Bu modu kullanan bir konteynerin dış dünya ile bağlantısı olmaz. Bunu yapabilmek için `-p` komutu ile port yönlendirme yapılması lazım. Varsayılan kullanıcı tarafından tanımlanmayan bir bridge ağ sürüsünü kullanarak oluşan konteynerler birbirleriyle iletişime geçebilir. Kullanıcı tarafından oluşturulan bridge ağ ile varsayılan olarak oluşan ağ arasında önemli bir fark vardır. Bu fark şöyle ki; normal şartlarda konteynerler birbiriyle IP üzerinde haberleşir. Fakat eğer konteynerlerin onlara atadığımız isimler üzerinden haberleşmesini istiyorsak kendi ağımızı oluşturmamız gerekiyor. Bu ağ varsayılan olarak belirtilen bridge ağ tipinde olsa dahi oluşturmamız gerekiyor. Eğer bunu oluşturmak istemezsek `link` komutuyla konteyneri göstermemiz gerekiyor. Fakat bu çok tercih edilen yöntem değildir. **Bu tipin kullanılacağı en ideal yer; aynı Docker Host üzerinde konteynerin birbiriyle iletişime geçmesini istediğimiz senaryolarda kullanılır.** [6]
+**Bridge:** Varsayılan ağ sürücüsüdür. Eğer aksi belirtilmezse oluşan konteyner bu sürüyü kullanarak oluşur. IP, Subnet ve Gateway adresi otomatik olarak konteynere atanır. Bu modu kullanan bir konteynerin dış dünya ile bağlantısı olmaz. Bunu yapabilmek için `-p` komutu ile port yönlendirme yapılması lazım. Varsayılan kullanıcı tarafından tanımlanmayan bir bridge ağ sürüsünü kullanarak oluşan konteynerler birbirleriyle iletişime geçebilir. **Bu tipin kullanılacağı en ideal yer; aynı Docker Host üzerinde konteynerin birbiriyle iletişime geçmesini istediğimiz senaryolarda kullanılır.** [6]
+
+#### Kullanıcı Tanımlı Bridge vs Varsayılan Bridge
+
+1. Normal şartlarda konteynerler birbiriyle IP üzerinde haberleşir. Fakat eğer konteynerlerin onlara atadığımız isimler üzerinden haberleşmesini istiyorsak kendi ağımızı oluşturmamız gerekiyor. Bu ağ varsayılan olarak belirtilen bridge ağ tipinde olsa dahi oluşturmamız gerekiyor. Eğer bunu oluşturmak istemezsek `link` komutuyla konteyneri göstermemiz gerekiyor. Fakat bu çok tercih edilen yöntem değildir.
+
+2. Kullanıcı tanımlı ağ daha izole çalışmamızı sağlar. Şöyle ki; bir host içerisinde oluşturduğumuz bütün konteynerler varsayılan olarak aynı ağa ekleneceğinden yanlışlıkla birbiri arasında iletişim olmaması gereken konteynerler haberleşebilir.
+
+3. Kullanıcı tanımlı ağa konteyner eklemek ve silmek daha kolaydır. Varsayılan ağa bir konteyner eklediğinizde onu ayırmak istersek o konteyneri silip farklı bir ağa bağlamanız gerekiyor.
+
+4. Her kullanıcı tanımlı ağ kendi ayrı (Iptable vb.) konfigürasyonu ile gelir. Bunları her ağ için ayrı tanımlayabiliriz. Ama varsayılan olarak gelen ağda bu ayarları değiştirirseniz docker'ı yeniden başlatmanız gerekir.
+
+**Bununla ilgili daha fazla bilgi için [burayı](https://docs.docker.com/network/bridge/) kullanabilirsiniz. Ben buradaki maddelerin bazılarını çevirmeye çalıştım.**
 
 **Host:** Host makinenin IP ve port bilgileri konteyner ile paylaşılır. **Bu tipin kullanılacağı en ideal yer; bir konteynerin ağını Docker Host'tan ayırmak istemediğimiz ama diğer özelliklerin Docker Host'tan ayrılmasını istediğimiz senaryolarda kullanılır.** [7]
 
@@ -333,11 +345,11 @@ docker network create
 
 # --gateway => Subnet için Gateway adresini tanımlar. 172.28.5.254 gibi.
 
-# --opt => Ek özellikleri tanımlamızı sağlar. Mesela NAT'ı aktif etmek istersek --ip-masq=true şeklinde bir parametre geçmemiz gerekiyor.
+# --opt => Ek özellikleri tanımlamamızı sağlar. Mesela NAT'ı aktif etmek istersek --ip-masq=true şeklinde bir parametre geçmemiz gerekiyor.
 
 ```
 
-Bu komut yeni bir ağ oluşturmamıza yardımcı olur. Aksini belirtmediğimiz sürece *bridge* modunda bir ağ oluşturacaktır. Bir paramatresi mevcut. Onlara bakmak isterseniz [buradan](https://docs.docker.com/engine/reference/commandline/network_create/#specify-advanced-options) inceleyebilirsiniz.
+Bu komut yeni bir ağ oluşturmamıza yardımcı olur. Aksini belirtmediğimiz sürece *bridge* modunda bir ağ oluşturacaktır. Bir parametresi mevcut. Onlara bakmak isterseniz [buradan](https://docs.docker.com/engine/reference/commandline/network_create/#specify-advanced-options) inceleyebilirsiniz.
 
 ```bash
 docker network ls
@@ -394,23 +406,23 @@ docker network ls
 
 **2. Adım** Konteynerlerimizi oluşturuyoruz.
 
-İlk konteynerimizi ve ikinci konteynerimizi "ilk_ag" isimli ağa bağlıyoruz. Bunları oluştururken direkt olarak ağa bağladık. Diğer iki konteynerleri oluşturup sonradan ağa bağlayacağız.
+İlk konteynerimizi ve ikinci konteynerimizi "ilk_ag" isimli ağa bağlıyoruz. Bunları oluştururken direkt olarak ağa bağladık. Diğer iki konteynerleri oluşturup sonradan ağa bağlayacağız. Burada için [iputils](https://github.com/iputils/iputils) kurduğum bir imajı kullanacağız. Çünkü kurulumdan sonra içine girip diğer konteynerlere ping göndereceğiz. Sürekli gidip sürekli aynı paketleri kurmamak için bu şekilde hazır imajı kullanalım.
 
 ```bash
-docker run -d --name nginx1 --network=ilk_ag nginx
+docker run -d --name nginx1 --network=ilk_ag omeraslan/nginx-iputils
 ```
 
 ```bash
-docker run -d --name nginx2 --network=ilk_ag nginx
+docker run -d --name nginx2 --network=ilk_ag omeraslan/nginx-iputils
 ```
 
 Burada sadece konteyner oluşturuyoruz sonradaki adımda ağa bağlayacağız.
 
 ```bash
-docker run -d --name nginx3 nginx
+docker run -d --name nginx3 omeraslan/nginx-iputils
 ```
 
-"ikici_ag" isimli ağa bağlıyoruz.
+"ikinci_ag" isimli ağa bağlıyoruz.
 
 ```bash
 docker network connect ikinci_ag nginx3
@@ -419,15 +431,44 @@ docker network connect ikinci_ag nginx3
 Sonuncu konteyner için adımları tekrarlıyoruz
 
 ```bash
-docker run -d --name nginx4 nginx
+docker run -d --name nginx4 omeraslan/nginx-iputils
 ```
 
-"ikici_ag" isimli ağa bağlıyoruz.
+"ikinci_ag" isimli ağa bağlıyoruz.
 
 ```bash
 docker network connect ikinci_ag nginx4
 ```
 
+**3. Adım** Konteyner iletişimlerini kontrol ediyoruz
+
+"nginx1" isimli konteynere bağlanıyoruz.
+
+```bash
+docker exec -it nginx1 /bin/bash
+```
+
+bağlandıktan sonra aşağıdaki komutu çalıştırarak diğer konteynerlere erişimini kontrol ediyoruz.
+
+```bash
+ping nginx2
+```
+
+"nginx2" isimli konteyner "nginx1" ile aynı ağda olduğundan sorunsuz erişecektir. Fakat `ping nginx3` yazarsak bağlantıda sorun yaşadığımızı göreceğiz.
+
+Şimdi de "nginx3" isimli konteynere bağlanıyoruz.
+
+```bash
+docker exec -it nginx3 /bin/bash
+```
+
+bağlandıktan sonra aşağıdaki komutu çalıştırarak diğer konteynerlere erişimini kontrol ediyoruz.
+
+```bash
+ping nginx4
+```
+
+"nginx4" isimli konteyner "nginx3" ile aynı ağda olduğundan sorunsuz erişecektir. Fakat `ping nginx2` yazarsak bağlantıda sorun yaşadığımızı göreceğiz.
 
 [1]: https://www.emrealadag.com/docker-nedir.html
 [2]: https://medium.com/devopsturkiye/i%CC%87nceleme-1-docker-volume-971c41122d83
