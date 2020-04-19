@@ -4,11 +4,11 @@ Bu proje docker eğitimleri sırasında öğrenilen komutları ve amaçlarını 
 
 ## İçindekiler
 
-- [Docker Nedir?](/Docker-1#docker-nedir)
-- [Terminoloji](/Docker-1#terminoloji)
-- [Komutlar](/Docker-1#komutlar)
-  - [Genel Komutlar](/Docker-1#a---genel-komutlar)
-  - [İmaj Komutları](/Docker-1#b---i̇maj-komutları)
-  - [Konteyner Komutları](/Docker-1#c---konteyner-komutları)
-- [Volume Yönetimi](/Docker-1#volume-yönetimi)
-- [Kaynak Yönetimi](/Docker-1#kaynak-yönetimi)
+- [Docker Nedir?](/Docker#docker-nedir)
+- [Terminoloji](/Docker#terminoloji)
+- [Komutlar](/Docker#komutlar)
+  - [Genel Komutlar](/Docker#a---genel-komutlar)
+  - [İmaj Komutları](/Docker#b---i̇maj-komutları)
+  - [Konteyner Komutları](/Docker#c---konteyner-komutları)
+- [Volume Yönetimi](/Docker#volume-yönetimi)
+- [Kaynak Yönetimi](/Docker#kaynak-yönetimi)

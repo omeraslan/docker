@@ -470,6 +470,24 @@ ping nginx4
 
 "nginx4" isimli konteyner "nginx3" ile aynı ağda olduğundan sorunsuz erişecektir. Fakat `ping nginx2` yazarsak bağlantıda sorun yaşadığımızı göreceğiz.
 
+### DOCKER FILE
+
+Docker konteynerlerinin imajlardan oluştuğundan bahsetmiştik. Bu imajlar bazen bir işletim sistemi içerebilir veya kullanıcının oluşturduğu bir uygulama ve uygulama konfigürasyonları olabilir. İmajlar **Dockerfile** ( tam olarak bu şekilde yazılması gerekiyor) olarak adlandırılan bir dosyadan oluşturulur. Bu dosyayı oluşturmak için bir çok komut bulunmaktadır. Şimdi bu komutların ne işe yaradığını öğrenelim.
+
+#### FROM
+
+Çoğu Dockerfile'ın içinde görebileceğiniz bu komut hangi imajın temel imaj olarak kullanılacağını ifade eder. Aynı `docker pull` veya `docker run` yazdıktan sonra eğer image adının sonuna `:` kullanarak imaja ait bir tag belirtmezsek varsayılan olarak **latest** etiketine sahip imajı alıp kullanılacaktır. Dockerfile yazarken genelde imajlara tag belirtmek önerilir. 
+
+Örnek kullanım;
+
+```yaml
+FROM centos
+#Versiyon belirtmediğimiz için latest etiketine sahip imajı alacaktır.
+
+FROM centos:8.1.1911
+#Version belirttik artık 8.1.1911 versiyonunu kullanacaktır.
+```
+
 [1]: https://www.emrealadag.com/docker-nedir.html
 [2]: https://medium.com/devopsturkiye/i%CC%87nceleme-1-docker-volume-971c41122d83
 [3]:https://docs.docker.com/network/#network-drivers
